@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-demo
+  template:
+    metadata:
+      labels:
+        app: python-demo
+    spec:
+      containers:
+      - name: python-demo
+        image: python:3.10
+        command: ["python", "-c"]
+        args:
+          - |
+            import os
+            print("🚀 Argo CD Python Demo - Version", os.getenv("VERSION", "v1"))
+            import time
+            while True:
+              time.sleep(30)
+        env:
+        - name: VERSION
+          valueFrom:
+            configMapKeyRef:
+              name: python-config
+              key: version
